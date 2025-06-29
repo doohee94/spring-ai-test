@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>유전자 분석 결과</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom right, #f0f4f8, #e0f7fa);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 40px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .gene-title {
+            font-size: 38px;
+            font-weight: bold;
+            background-color: #004d40;
+            color: white;
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin-bottom: 50px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        .item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .item:hover {
+            transform: translateY(-5px);
+        }
+        .label {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #00695c;
+            font-weight: bold;
+
+        }
+        .score-box, .confidence-box {
+            font-size: 20px;
+            font-weight: bold;
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .score-box {
+            color: #fff;
+        }
+        .confidence-box.high {
+            background-color: #4dd0e1;
+            color: #004d40;
+        }
+        .confidence-box.middle {
+            background-color: #ffb74d;
+            color: #5d4037;
+        }
+        .confidence-box.low {
+            background-color: #ef5350;
+            color: white;
+        }
+        .details {
+            font-size: 18px;
+            text-align: left;
+            background: white;
+            color: #212121;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+        }
+    </style>
+    <script>
+        function showDetails(type, scoreReason, confidenceReason) {
+            const detailDiv = document.getElementById("details");
+            detailDiv.innerHTML =
+                `<h3 style='color:#00695c;'>${type}</h3>
+                <p><strong>Score </strong> ${scoreReason}</p>
+                <p><strong>Confidence </strong> ${confidenceReason}</p>`;
+            detailDiv.style.display = "block";
+        }
+
+        function getScoreColor(score) {
+            const green = Math.min(255, 100 + score * 15);
+            const red = 255 - score * 10;
+            return `rgb(${red}, ${green}, 130)`;
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".score-box").forEach(box => {
+                const score = parseInt(box.innerText);
+                box.style.backgroundColor = getScoreColor(score);
+            });
+
+            document.querySelectorAll(".item").forEach(item => {
+                item.addEventListener("click", function () {
+                    const type = this.dataset.type;
+                    const scoreReason = this.dataset.scorereason;
+                    const confidenceReason = this.dataset.confidencereason;
+                    showDetails(type, scoreReason, confidenceReason);
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="gene-title" th:text="${geneName}">GENE_NAME</div>
+    <div class="grid">
+        <div class="item"
+             th:each="result : ${analysisResults}"
+             th:attr="data-type=${result.type}, data-scoreReason=${result.scoreReason}, data-confidenceReason=${result.confidenceReason}">
+            <div class="label" th:text="${result.type}">Type</div>
+            <div class="score-box" th:text="${result.score}">10</div>
+            <div class="confidence-box"
+                 th:text="${result.confidence}"
+                 th:classappend="${result.confidence.toLowerCase()}">
+                Confidence
+            </div>
+        </div>
+    </div>
+
+    <div id="details" class="details"></div>
+</div>
+</body>
+</html>

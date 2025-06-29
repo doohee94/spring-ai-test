@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>유전자 검색</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #ffffff;
+      color: #222;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .search-container {
+      text-align: center;
+      border: 2px solid #002b36;
+      padding: 40px;
+      border-radius: 8px;
+    }
+    .search-container input[type="text"] {
+      font-size: 24px;
+      padding: 12px;
+      width: 300px;
+      margin-right: 10px;
+      border: 1px solid #ccc;
+    }
+    .search-container button {
+      font-size: 20px;
+      padding: 12px 24px;
+      background-color: #135a7c;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .search-container button:hover {
+      background-color: #0e3e5c;
+    }
+  </style>
+</head>
+<body>
+<div class="search-container">
+  <h2>검색할 유전자를 입력해주세요</h2>
+  <input type="text" id="geneInput" placeholder="PDCD1" />
+  <button onclick="searchGene()">검색</button>
+</div>
+
+<script>
+  function searchGene() {
+    const geneName = document.getElementById('geneInput').value.trim();
+    if (!geneName) {
+      alert("유전자 이름을 입력해주세요.");
+      return;
+    }
+
+    // 1차 확인용 /gene/{geneName} API 호출
+    fetch(`/gene/${geneName}`)
+            .then(res => {
+              if (!res.ok) throw new Error("유전자 정보 조회 실패");
+              return res.json();
+            })
+            .then(data => {
+              if (data.status === "ok") {
+                // 상태 ok면 상세 페이지로 이동
+                window.location.href = `/gene/${geneName}/details`;
+              } else {
+                alert("유효하지 않은 유전자입니다.");
+              }
+            })
+            .catch(err => {
+              console.error(err);
+              alert("유전자 조회 중 오류가 발생했습니다.");
+            });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+server:
+  port: 9090
+
+spring:
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    url: jdbc:h2:mem://localhost/~/genome-portal;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  config:
+    import: optional:file:.env[.properties]
+
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: gpt-4o
+      embedding:
+        options:
+          model: text-embedding-ada-002
+
+
+    vectorstore:
+      weaviate:
+        host: localhost:8080
+        object-class: LitSense
+        consistency-level: quorum
+        scheme: http
+#
+#  cache:
+#    type: redis
