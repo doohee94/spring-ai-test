@@ -4,6 +4,7 @@ package com.example.iciinsight.service;
 import com.example.iciinsight.dto.AIResponseDTO;
 import com.example.iciinsight.dto.DrugDto;
 import com.example.iciinsight.dto.LitSenseDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ public class TestService {
     private final LitSenseService litSenseService;
 
 
-    public List<LitSenseDto> getLitsenseList(String gene, String drug) {
+    public List<LitSenseDto> getLitsenseList(String gene, String drug){
 
         return  litSenseService.getLitsenseList(gene, drug).getLitSenseDtoList();
     }
@@ -26,7 +27,4 @@ public class TestService {
         return drugService.getDrugList(gene);
     }
 
-    public List<AIResponseDTO> getAiResponse(String gene, String drug) {
-        return null;
-    }
 }

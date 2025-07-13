@@ -26,7 +26,7 @@ public class TestController {
     }
 
     @GetMapping("/test/litsense")
-    public List<LitSenseDto> getLitsenseList(@RequestParam String gene, @RequestParam String drug) {
+    public List<LitSenseDto> getLitsenseList(@RequestParam String gene, @RequestParam String drug){
         return testService.getLitsenseList(gene, drug);
     }
 

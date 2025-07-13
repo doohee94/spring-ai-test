@@ -20,6 +20,7 @@ public class LitSenseService {
 
         Mono<List<LitSenseDto>> litSenseDtoMono = litSenseWebClient.get()
                 .uri(uriBuilder -> uriBuilder
+                        .queryParam("format", "json")
                         .queryParam("query", "Are there any links between "+drug+" and " + gene)
                         .queryParam("rerank", "true")
                         .build())
@@ -27,6 +28,7 @@ public class LitSenseService {
                 .bodyToMono(new ParameterizedTypeReference<List<LitSenseDto>>() {
                 });
 
-        return new LitSenseList(litSenseDtoMono.block());
+
+        return new LitSenseList(litSenseDtoMono.block()) ;
     }
 }

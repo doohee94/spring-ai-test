@@ -18,7 +18,8 @@ public class WebClientConfig {
     @Bean
     public WebClient litSenseWebClient() {
         return WebClient.builder()
-                .baseUrl("https://www.ncbi.nlm.nih.gov/research/litsense-api/api")
+                .defaultHeader("User-Agent", "Mozilla/5.0")
+                .baseUrl("https://www.ncbi.nlm.nih.gov/research/litsense-api/api/")
                 .build();
     }
 
