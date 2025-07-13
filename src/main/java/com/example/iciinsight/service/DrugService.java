@@ -41,7 +41,7 @@ public class DrugService {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(requestBody)
                 .retrieve()
-                .bodyToMono(Map.class) // 전체 응답을 Map으로 받음
+                .bodyToMono(Map.class)
                 .map(this::extractDrugsFromMap)
                 .block();
     }

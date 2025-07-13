@@ -1,5 +1,6 @@
 package com.example.iciinsight.service;
 
+
 import com.example.iciinsight.dto.AIResponseDTO;
 import com.example.iciinsight.dto.AIResponseListDto;
 import com.example.iciinsight.dto.PromptLoader;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AIService {
+public class OpenAIService {
 
     private final ChatClient chatClient;
     private final WeaviateVectorStore weaviateVectorStore;
@@ -51,5 +52,4 @@ public class AIService {
         return aiResponseDTOList;
 
     }
-
 }

@@ -44,7 +44,7 @@ dependencies {
     implementation 'org.springframework.ai:spring-ai-weaviate-store'
     implementation 'org.springframework.ai:spring-ai-starter-vector-store-weaviate'
 
-//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.8.9'
 
 //    runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2:1.4.200'
