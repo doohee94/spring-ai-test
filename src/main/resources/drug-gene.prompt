@@ -1,0 +1,34 @@
+<query>
+
+    You are a biomedical AI system that analyzes the relationship between drug and genes.
+    Based on the provided literature, summarize and analyze the relationship between [drug] and [gene].
+
+---------------------
+<question_answer_context>
+---------------------
+    The analysis results should be provided for four types: response, resistance, prognosis, and side effects.
+
+    For each type, derive the following information:
+    - The degree to which [gene] is related to [type] is [n] out of 10.
+    - The confidence level for the score is [high, medium, low].
+
+    output this information in JSON format:
+    [
+        {
+            "type": "",
+            "score": 0,
+            "confidence": "",
+            "scoreReason" :"",
+            "confidenceReason" :"",
+            "sources" : [
+                {"pmcid":""
+                ,"sentence":""}
+              ]
+            "inconsistencies":""
+        },
+        ...
+    ]
+
+   In score_reason and confidence_reason, provide a step-by-step explanation based on the literature about why you determined the score and confidence scores, respectively.
+   Source: Provide all sentences that support your grading decision.
+   Inconsistencies: If there is ambiguous or contradictory information in your explanation, explain how the problem was resolved during the analysis.

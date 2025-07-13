@@ -22,16 +22,16 @@ public class AIService {
     private final ChatClient chatClient;
     private final WeaviateVectorStore weaviateVectorStore;
 
-    public List<AIResponseDTO> getAIResponse(String gene) throws JsonProcessingException {
+    public List<AIResponseDTO> getAIResponse(String gene, String drug) throws JsonProcessingException {
 
-        String promptTemplateText = PromptLoader.loadPrompt("gene-analysis.prompt");
+        String promptTemplateText = PromptLoader.loadPrompt("drug-gene.prompt");
 
         PromptTemplate customPromptTemplate = PromptTemplate.builder()
                 .renderer(StTemplateRenderer.builder().startDelimiterToken('<').endDelimiterToken('>').build())
                 .template(promptTemplateText)
                 .build();
 
-        String question = "Analyze the relationship between immunotherapy and "+ gene;
+        String question = "Analyze the relationship between "+ drug +" and "+ gene;
 
         QuestionAnswerAdvisor questionAnswerAdvisor = QuestionAnswerAdvisor.builder(weaviateVectorStore)
                 .searchRequest(SearchRequest.builder().similarityThreshold(0.5).topK(40).build())
@@ -46,8 +46,9 @@ public class AIService {
                 .content();
 
 
+        List<AIResponseDTO> aiResponseDTOList = new AIResponseListDto(response).getAiResponseDTOList();
 
-        return new AIResponseListDto(response).getAiResponseDTOList();
+        return aiResponseDTOList;
 
     }
 

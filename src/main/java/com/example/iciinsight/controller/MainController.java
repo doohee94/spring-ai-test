@@ -1,7 +1,9 @@
 package com.example.iciinsight.controller;
 
 import com.example.iciinsight.dto.AIResponseDTO;
+import com.example.iciinsight.dto.DrugDto;
 import com.example.iciinsight.service.AIService;
+import com.example.iciinsight.service.DrugService;
 import com.example.iciinsight.service.LitSenseService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -21,30 +23,27 @@ public class MainController {
 
     private final LitSenseService litSenseService;
     private final AIService aiService;
+    private final DrugService drugService;
 
     @GetMapping
     public String index(Model model) {
         return "gene/search";
     }
 
-    @GetMapping("/gene/{geneName}")
+
+    @GetMapping("/gene/{gene}")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> checkGene(@PathVariable String geneName) {
-
-        boolean exists = litSenseService.checkGene(geneName);
-        Map<String, String> response = new HashMap<>();
-        response.put("status", exists ? "ok" : "error");
-
-        return ResponseEntity.ok(response);
+    public List<DrugDto> test(@PathVariable String gene) {
+        return drugService.getDrugList(gene);
     }
 
-    @GetMapping("/gene/{geneName}/details")
-    public String details(@PathVariable String geneName, Model model) throws JsonProcessingException {
+    @GetMapping("/gene/{gene}/details")
+    public String details(@PathVariable String gene,String drug, Model model) throws JsonProcessingException {
 
-        litSenseService.addLitSenseDataToVDB(geneName);
-        List<AIResponseDTO> results  =aiService.getAIResponse(geneName);
+        litSenseService.addLitSenseDataToVDB(gene, drug);
+        List<AIResponseDTO> results  =aiService.getAIResponse(gene, drug);
 
-        model.addAttribute("geneName", geneName);
+        model.addAttribute("gene", gene);
         model.addAttribute("analysisResults", results);
 
         return "gene/analysis";

@@ -4,14 +4,13 @@ import com.example.iciinsight.dto.DrugDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserter;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -23,7 +22,7 @@ public class DrugService {
 
         String query = """
                 {
-                  genes(names: ["PDCD1"]) {
+                  genes(names: ["%s"]) {
                     nodes {
                       interactions {
                         drug {
@@ -34,7 +33,7 @@ public class DrugService {
                     }
                   }
                 }
-                """;
+                """.formatted(gene);
 
         Map<String, Object> requestBody = Map.of("query", query);
 
@@ -64,10 +63,10 @@ public class DrugService {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace(); // 혹은 로깅
+            e.printStackTrace();
         }
 
-        return drugs;
+        return drugs.stream().sorted(Comparator.comparing(DrugDto::getName)).collect(Collectors.toList());
     }
 
 

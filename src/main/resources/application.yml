@@ -32,6 +32,3 @@ spring:
         object-class: LitSense
         consistency-level: quorum
         scheme: http
-#
-#  cache:
-#    type: redis

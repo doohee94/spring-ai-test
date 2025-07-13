@@ -16,7 +16,17 @@ public class AIResponseDTO {
     private String confidence;
     private String scoreReason;
     private String confidenceReason;
-    private List<String> sources;
+    private List<SourceDto> sources;
     private String inconsistencies;
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class SourceDto{
+
+        private String pmcid;
+        private String sentence;
+
+    }
 
 }

@@ -23,38 +23,14 @@ import java.util.Map;
 public class LitSenseService {
 
     private final WebClient litSenseWebClient;
-    private final WebClient ncbiWebClient;
     private final WeaviateVectorStore weaviateVectorStore;
 
 
-    public boolean checkGene(String gene){
-        boolean result = false;
-
-        Map<String, Object> response = ncbiWebClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .queryParam("db", "gene")
-                        .queryParam("term", gene + "[Gene%20Name] AND Homo sapiens[Organism]")
-                        .queryParam("retmode", "json")
-                        .build())
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
-                .block(); //
-
-        if (response != null) {
-            Map<String, Object> esearchResult = (Map<String, Object>) response.get("esearchresult");
-            List<String> idList = (List<String>) esearchResult.get("idlist");
-            result = idList != null && !idList.isEmpty();
-        }
-
-        return result;
-
-    }
-
-    public void addLitSenseDataToVDB(String gene) {
+    public void addLitSenseDataToVDB(String gene, String drug) {
 
         Mono<List<LitSenseDto>> litSenseDtoMono = litSenseWebClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .queryParam("query", "Are immune checkpoint inhibitors linked to " + gene)
+                        .queryParam("query", "Are there any links between "+drug+" and " + gene)
                         .queryParam("rerank", "true")
                         .build())
                 .retrieve()
@@ -64,42 +40,16 @@ public class LitSenseService {
         LitSenseList litSenseList = new LitSenseList(litSenseDtoMono.block());
 
         List<Document> documents = litSenseList.getLitSenseDtoList().stream()
-                .map(t -> new Document(t.getText()))
+                .map(t -> new Document(t.getText(), Map.of("pmcid", t.getPmcid() != null ? t.getPmcid() : "UNKNOWN")))
                 .toList();
 
 
         for  (Document document : documents) {
-            System.out.println(document.getText());
+            System.out.println(document.getMetadata().get("pmcid")+" "+document.getText());
         }
 
         weaviateVectorStore.add(documents);
 
-
-//        // 4. 텍스트를 기반으로 GPT에 질문
-//
-//        PromptTemplate customPromptTemplate = PromptTemplate.builder()
-//                .renderer(StTemplateRenderer.builder().startDelimiterToken('<').endDelimiterToken('>').build())
-//                .template("""
-//                """)
-//                .build();
-//
-//        String question = "Analyze the relationship between immunotherapy and "+ gene;
-//
-//        QuestionAnswerAdvisor questionAnswerAdvisor = QuestionAnswerAdvisor.builder(weaviateVectorStore)
-//                .searchRequest(SearchRequest.builder().similarityThreshold(0.5).topK(40).build())
-//                .promptTemplate(customPromptTemplate)
-//                .build();
-//
-//
-//        String response = chatClient
-//                .prompt(question)
-//                .advisors(questionAnswerAdvisor)
-//                .call()
-//                .content();
-//
-//        // 5. GPT 모델로 실제 질문
-
-//        return response;
     }
 
 
